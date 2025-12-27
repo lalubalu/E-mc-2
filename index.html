@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset = "UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>E = mc²</title>
+    <!-- the fonts to make the header look pretty tuff-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+
+     <link rel="stylesheet" href="./style.css" />
+  </head>
+
+<body>
+  <div class="stage" id="stage">
+    <canvas id="viz"></canvas>
+
+    <!-- js a lil tiny mark-->
+    <div class="mark" aria-hidden="true">
+      <span class="mark__dot"></span>
+      <span class="mark__text">E = mc<sup>2</sup></span>
+
+    </div>
+
+    <!-- the center button -->
+    <button class="zoomBtn" id="zoomBtn" type="button">
+      <span class="zoomBtn__glow" aria-hidden="true"></span>
+      <span class="zoomBtn__text">Let’s zoom into a new world</span>
+      <span class="zoomBtn__icon" aria-hidden="true">⤴</span>
+    </button>
+
+    <!-- grain -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- blank “new world” (same file for now) -->
+    <div class="blank" id="blank" aria-hidden="true"></div>
+  </div>
+
+  <script src="./script.js" defer></script>
+  </body>
+</html>
