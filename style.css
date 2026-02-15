@@ -1,0 +1,189 @@
+:root{
+  --bg0:#05070c;
+  --bg1:#070a12;
+
+  --ice:#7dd3fc;
+  --amber:#fbbf24;
+  --lime:#a3e635;
+
+  --ink:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.62);
+
+  --stroke:rgba(255,255,255,.14);
+  --stroke2:rgba(255,255,255,.22);
+
+  --shadow: 0 28px 80px rgba(0,0,0,.55);
+  --shadow2: 0 10px 26px rgba(0,0,0,.35);
+
+  --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--font);
+  overflow:hidden;
+  background:
+    radial-gradient(1200px 900px at 15% 0%, rgba(125,211,252,.18), transparent 60%),
+    radial-gradient(900px 700px at 85% 10%, rgba(251,191,36,.14), transparent 58%),
+    radial-gradient(900px 700px at 70% 95%, rgba(163,230,53,.10), transparent 62%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+.stage{
+  position:fixed;
+  inset:0;
+  transform-origin: 50% 50%;
+}
+
+#viz{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+
+.grain{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.10;
+  mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+}
+.mark{
+  position:absolute;
+  top:16px;
+  left:50%;
+  transform: translateX(-50%);
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+
+
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+
+  user-select:none;
+  pointer-events:none; /* so it never blocks clicks */
+}
+.mark__dot{ display:none; }
+
+.mark__text{
+  font-family: "IM Fell English SC", ui-serif, Georgia, "Times New Roman", serif;
+  font-size: 58px;
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.82);
+
+  /* old ink vibe */
+  text-shadow:
+    0 1px 0 rgba(0,0,0,.35),
+    0 10px 30px rgba(0,0,0,.35);
+
+  /* slightly imperfect look */
+  transform: rotate(-1.2deg);
+}
+
+/* in case you ever do day mode */
+[data-mode="day"] .mark__text{
+  color: rgba(0,0,0,.72);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.65),
+    0 10px 30px rgba(0,0,0,.08);
+}
+
+/* center zoom button */
+.zoomBtn{
+  position:absolute;
+  left:50%;
+  top:78%;
+  transform: translate(-50%,-50%);
+  border-radius: 999px;
+  border: 1px solid var(--stroke2);
+  padding: 14px 16px;
+  min-width: min(520px, 92vw);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 12px;
+  cursor:pointer;
+  color: var(--ink);
+  background:
+    radial-gradient(140px 70px at 25% 25%, rgba(255,255,255,.20), transparent 60%),
+    linear-gradient(135deg, rgba(125,211,252,.16), rgba(251,191,36,.12));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  transition: transform .18s ease, border-color .2s ease, filter .2s ease;
+}
+.zoomBtn:hover{
+  transform: translate(-50%,-50%) scale(1.015);
+  border-color: rgba(125,211,252,.35);
+  filter: brightness(1.03);
+}
+.zoomBtn:active{
+  transform: translate(-50%,-50%) scale(.995);
+}
+.zoomBtn:focus-visible{
+  outline:none;
+  box-shadow: var(--shadow), 0 0 0 5px rgba(125,211,252,.16);
+}
+.zoomBtn__text{
+  font-weight:650;
+  font-size:14px;
+  letter-spacing:-.01em;
+}
+.zoomBtn__icon{opacity:.85;font-weight:700}
+.zoomBtn__glow{
+  position:absolute;
+  inset:-60px;
+  background:
+    radial-gradient(360px 200px at 30% 35%, rgba(125,211,252,.22), transparent 58%),
+    radial-gradient(320px 200px at 78% 40%, rgba(251,191,36,.18), transparent 62%),
+    radial-gradient(260px 160px at 60% 85%, rgba(163,230,53,.14), transparent 62%);
+  filter: blur(14px);
+  opacity:.95;
+  pointer-events:none;
+}
+
+/* BLANK “new world” layer */
+.blank{
+  position:absolute;
+  inset:0;
+  background: radial-gradient(900px 600px at 50% 40%, rgba(255,255,255,.05), rgba(0,0,0,.98));
+  opacity:0;
+  pointer-events:none;
+}
+
+/* ===== Zoom transition ===== */
+body.is-zooming .stage{
+  transition: transform 1050ms cubic-bezier(.12,.9,.18,1), filter 1050ms cubic-bezier(.12,.9,.18,1);
+  transform: scale(1.9);
+  filter: blur(4px) brightness(1.15) saturate(1.1);
+}
+body.is-zooming .zoomBtn{
+  transition: transform 850ms cubic-bezier(.12,.9,.18,1), opacity 420ms ease;
+  transform: translate(-50%,-50%) scale(0.7);
+  opacity: 0;
+}
+body.is-world .blank{
+  transition: opacity 520ms ease;
+  opacity: 1;
+}
+body.is-world .mark{
+  opacity:0;
+  transition: opacity 300ms ease;
+}
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .zoomBtn, .stage{transition:none !important}
+}
